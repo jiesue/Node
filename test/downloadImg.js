@@ -1,28 +1,38 @@
 const http = require('http');
 const https = require('https');
-
+var request = require('request');
 const fs = require('fs');
 const path = require('path');
+var iconv = require('iconv-lite'); //转码
+var cheerio = require('cheerio'); //快速、灵活、实施的jQuery核心实现
+
+//var async = require("async"); // 解决异步问题
 
 function getHtml(url) {
     return new Promise(function (resolve, reject) {
         let html;
         let myhttp = url.indexOf('https') > -1 ? https : http;
-        myhttp.get(url, function (res) {
-            res.on("data", (data) => {
-                html += data
-            })
-            res.on("end", () => {
-                html = html.toString()
-                resolve(html)
-            })
-        }).on("error", (e) => {
-            reject(e)
+        // myhttp.get(url, function (res) {
+        //     res.on("data", (data) => {
+        //         html += data
+        //     })
+        //     res.on("end", () => {
+        //         html = html.toString()
+        //         resolve(html)
+        //     })
+        // }).on("error", (e) => {
+        //     reject(e)
+        // })
+        request(url, function (error, response, body) {
+
+            console.log(body) // 请求成功的处理逻辑
+            resolve(body)
         })
-    })
+    });
 }
 function write(uri, path) {
     let ws = fs.createWriteStream(path);
+    console.log('下载链接：' + uri);
     http.get(uri, (res) => {
         console.log(res);
         if (!res || res.statusCode !== 200) {
@@ -52,10 +62,13 @@ function write(uri, path) {
 let myPath = 'test/dl/'
 let imgReg = /<img.*?(?:>|\/>)/gi;
 let srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i;
-let url = 'http://image.baidu.com/search/index?tn=baiduimage&ps=1&ct=201326592&lm=-1&cl=2&nc=1&ie=utf-8&word=%E8%8A%B1%E7%93%A3%E7%BD%91'
+let url = 'http://www.win4000.com/wallpaper.html'
 getHtml(url).then(res => {
+
+    $ = cheerio.load(res);
+    res = $.html()
     let imgArr = res.match(imgReg)
-    console.log(res.toString());
+    // console.log(res.toString());
     for (let index = 0; index < imgArr.length; index++) {
         console.log(index);
         let element = imgArr[index];
@@ -72,9 +85,8 @@ getHtml(url).then(res => {
         console.log(src);
         write(src, myPath + fileName)
     }
-
-
 })
 // write(uri, path)
 // const dest = path.join('custom_path', 'filename.extname');
 // 你可能需要自行确保该路径存在
+// getHtml(url)
