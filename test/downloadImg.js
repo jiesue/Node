@@ -2,7 +2,7 @@
 
 //var async = require("async"); // 解决异步问题
 
-const { getHtml, fsWrite } = require('./utils');
+const { getHtml, fsDownload } = require('./utils');
 
 let myPath = 'test/dl/'
 let imgReg = /<img.*?(?:>|\/>)/gi;
@@ -28,7 +28,7 @@ getHtml(url).then(res => {
         }
         let fileName = src.replace(/(.*\/)*([^.]+)/i, "$2");
         console.log(src);
-        fsWrite(src, myPath + fileName)
+        fsDownload(src, myPath + fileName)
     }
 })
 // fsWrite(uri, path)

@@ -8,8 +8,8 @@ const path = require('path');
 
 function getHtml(url) {
     return new Promise(function (resolve, reject) {
-        let html;
-        let myhttp = url.indexOf('https') > -1 ? https : http;
+        // let html;
+        // let myhttp = url.indexOf('https') > -1 ? https : http;
         // headers: {
         //     "Connection": "keep-alive",
         //     "Content-Length": 111,
@@ -18,23 +18,21 @@ function getHtml(url) {
         // }//伪造请求头
         request({
             url: url,//请求路径
-            method: "POST",//请求方式，默认为get
+            method: "get",//请求方式，默认为get
             headers: {//设置请求头
-                "Connection": "keep-alive",
-                "Content-Length": 111,
-                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"
+                'Upgrade-Insecure-Requests': 1,
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36'
             },
-           // body: JSON.stringify(requestData)//post参数字符串
+            // body: JSON.stringify(requestData)//post参数字符串
         }, function (error, response, body) {
-            // console.log(body) // 请求成功的处理逻辑
             resolve(body)
         })
     });
 }
 
-function fsWrite(uri, path) {
-    let ws = fs.createWriteStream(path);
+function fsDownload(uri, filepath) {
+    filepath = path.join(__dirname, filepath)
+    let ws = fs.createWriteStream(filepath);
     console.log('下载链接：' + uri);
     http.get(uri, (res) => {
         console.log(res);
@@ -55,14 +53,15 @@ function fsWrite(uri, path) {
 
 
     }).on('error', (err) => {
-        fs.unlink(path, function () {
+        fs.unlink(filepath, function () {
             console.log('删除成功');
         });
         console.error(err);
     })
 }
 
-function delDir(path) {
+function delDir(filepath) {
+    filepath = path.join(__dirname, filepath)
     return new Promise(function (resolve, reject) {
         fs.rmdir(path, function (err) {
             if (err) {
@@ -74,7 +73,8 @@ function delDir(path) {
 
 }
 
-function readDir(path) {
+function readDir(filepath) {
+    filepath = path.join(__dirname, filepath)
     return new Promise(function (resolve, reject) {
         fs.readdir(path, function (err, files) {
             if (err) {
@@ -101,6 +101,22 @@ function deleteFile(delPath, direct) {
         console.log('del error', error);
     }
 }
+function createFloder(createPath, direct) {
+    createPath = direct ? createPath : path.join(__dirname, createPath)
+    try {
+        /**
+         * @desc 判断文件或文件夹是否存在
+         */
+        if (!fs.existsSync(createPath)) {
+            fs.mkdirSync(createPath);
+        } else {
+            console.log('inexistence path：', createPath);
+        }
+    } catch (error) {
+        console.log('create floder error', error);
+    }
+}
+
 
 /**
  * * @param { direct：Boolean } （是否需要处理地址）
@@ -184,4 +200,4 @@ function deleteFolder(delPath) {
     }
 }
 
-module.exports = { fsWrite, getHtml, delDir, readDir, deleteFile, copyFolder, deleteFolder }
+module.exports = { createFloder,fsDownload, getHtml, delDir, readDir, deleteFile, copyFolder, deleteFolder }
