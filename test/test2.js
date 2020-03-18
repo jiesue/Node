@@ -211,7 +211,7 @@
 
 
 // 执行前创建一个空的目录
-console.log("准备!!",__dirname);
+console.log("准备!!", __dirname);
 // fs.rmdir('22', function (err) {
 //     if (err) {
 //         return console.error(err);
@@ -331,4 +331,19 @@ console.log("准备!!",__dirname);
 
 
 
+// function as() {
+//     return new Promise(function(res,rej){
+//         setTimeout(() => {
+//             res(111)
+//          }, 2000);
+//     })
+// }
 
+// async function test() {
+//     let r = await as()
+//     console.log(2,r);
+// }
+// console.log(test());
+// test().then(res => {
+//     console.log(1,res);
+// })

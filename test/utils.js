@@ -31,32 +31,38 @@ function getHtml(url) {
 }
 
 function fsDownload(uri, filepath) {
-    filepath = path.join(__dirname, filepath)
-    let ws = fs.createWriteStream(filepath);
-    console.log('下载链接：' + uri);
-    http.get(uri, (res) => {
-        console.log(res);
-        if (!res || res.statusCode !== 200) {
-            console.log('444');
-            return;
-        }
-        res.on('end', () => {
-            console.log('finish download');
-        });
-        // 进度、超时等
-        res.pipe(ws);
-        ws.on('finish', () => {
-            ws.close();
+    return new Promise((resolve, rej) => {
+        filepath = path.join(__dirname, filepath)
+        let ws = fs.createWriteStream(filepath);
+        console.log('下载链接：' + uri);
+        http.get(uri, (res) => {
+            console.log(res);
+            if (!res || res.statusCode !== 200) {
+                console.log('444');
+                rej(false)
+            }
+            res.on('end', () => {
+              
+            });
+            // 进度、超时等
+            res.pipe(ws);
+            ws.on('finish', () => {
+                ws.close();
+                console.log('finish download');
+                resolve(true)
+                // resolve(true)
+            }).on('error', (err) => {
+                console.log('写错误');
+                rej(err)
+            });
+
+
         }).on('error', (err) => {
-            console.log('写错误');
-        });
-
-
-    }).on('error', (err) => {
-        fs.unlink(filepath, function () {
-            console.log('删除成功');
-        });
-        console.error(err);
+            fs.unlink(filepath, function () {
+                console.log('删除成功');
+            });
+            console.error(err);
+        })
     })
 }
 
@@ -200,4 +206,7 @@ function deleteFolder(delPath) {
     }
 }
 
-module.exports = { createFloder,fsDownload, getHtml, delDir, readDir, deleteFile, copyFolder, deleteFolder }
+module.exports = { createFloder, fsDownload, getHtml, delDir, readDir, deleteFile, copyFolder, deleteFolder }
+
+
+
