@@ -211,7 +211,7 @@
 
 
 // 执行前创建一个空的目录
-console.log("准备!!");
+console.log("准备!!",__dirname);
 // fs.rmdir('22', function (err) {
 //     if (err) {
 //         return console.error(err);
