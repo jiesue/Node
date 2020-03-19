@@ -51,7 +51,7 @@ let maxPage = 2
 async function ask() {
     console.log('start');
     let requestUrl = `https://www.fabiaoqing.com/bqb/lists/type/hot/page/${pageSize++}.html`;
-    if (pageSize > maxPage) return;
+    if (pageSize-1 > maxPage) return;
     console.log('step 1');
     let pageUrlArr = await getPageUrlArr(requestUrl);
     console.log('step 2');
@@ -66,6 +66,7 @@ async function ask() {
             let downloadP = getDownloadPromiseArr(res);
             Promise.all(downloadP).then(res => {
                 //迭代
+                console.log('完成一页');
                 ask()
             })
         });
