@@ -4,7 +4,7 @@
  *@date: 2020-03-17 15:58:47
  *@version: V1.0.0
 */
-const { createFloder, fsDownload, getHtml, delDir, readDir, deleteFile, copyFolder, deleteFolder } = require('../utils')
+const { createFloder, fsDownload, getHtml, delDir, readDir, deleteFile, copyFolder, deleteFolder } = require('../../utils')
 var cheerio = require('cheerio');
 let fs = require('fs')
 console.log('开始');
