@@ -8,8 +8,8 @@
 const { createFloder, fsDownload, getHtml, delDir, readDir, deleteFile, copyFolder, deleteFolder } = require('../../utils')
 var cheerio = require('cheerio');
 let fs = require('fs')
-let maxPageSize = 100;
-let nowPage = 1;
+let maxPageSize = 400;
+let nowPage = 301;
 console.log('开始');
 let baseUrl = 'https://www.fabiaoqing.com';
 var mysql = require('mysql');
